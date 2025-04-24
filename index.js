@@ -13,6 +13,11 @@ const {
   INSTAGRAM_REDIRECT_URI,
 } = process.env;
 
+app.get("/", (req, res) => {
+    res.send("Instagram Auth Backend is running.");
+  });
+
+  
 app.post("/api/instagram-auth", async (req, res) => {
   const { code } = req.body;
 
