@@ -91,16 +91,12 @@ app.get("/api/instagram-media", async (req, res) => {
       return res.json(insightRes.data);
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         console.error("Error fetching insights:", error.response.data);
         return res.status(error.response.status).json({ error: error.response.data.error.message });
       } else if (error.request) {
-        // The request was made but no response was received
         console.error("Error fetching insights:", error.request);
         return res.status(500).json({ error: "No response received from Instagram API" });
       } else {
-        // Something happened in setting up the request that triggered an Error
         console.error("Error fetching insights:", error.message);
         return res.status(500).json({ error: "Failed to fetch insights" });
       }
