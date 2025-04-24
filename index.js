@@ -58,7 +58,7 @@ app.get("/api/instagram-media", async (req, res) => {
       const mediaRes = await axios.get(
         `https://graph.instagram.com/me/media`, {
           params: {
-            fields: "id,caption,media_type,media_url,permalink,thumbnail_url,timestamp,username",
+            fields: "id,caption,media_type,media_url,permalink,thumbnail_url,timestamp,username,like_count",
             access_token,
           }
         }
@@ -70,6 +70,31 @@ app.get("/api/instagram-media", async (req, res) => {
       return res.status(500).json({ error: "Failed to fetch media" });
     }
   });
+
+  app.get("/api/instagram-profile", async (req, res) => {
+    const { access_token } = req.query;
+  
+    if (!access_token) {
+      return res.status(400).json({ error: "Access token is required" });
+    }
+  
+    try {
+      const profileRes = await axios.get(
+        "https://graph.instagram.com/me", {
+          params: {
+            fields: "biography,follows_count,account_type,profile_picture_url,id,username,media_count,followers_count",
+            access_token
+          }
+        }
+      );
+  
+      return res.json(profileRes.data);
+    } catch (error) {
+      console.error("Error fetching profile info:", error.response?.data || error.message);
+      return res.status(500).json({ error: "Failed to fetch profile data" });
+    }
+  });
+  
   
   app.get("/api/instagram-media-insights", async (req, res) => {
     const { access_token, media_id } = req.query;
