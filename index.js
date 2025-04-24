@@ -71,6 +71,30 @@ app.get("/api/instagram-media", async (req, res) => {
     }
   });
   
+  app.get("/api/instagram-media-insights", async (req, res) => {
+    const { access_token, media_id } = req.query;
+  
+    if (!access_token || !media_id) {
+      return res.status(400).json({ error: "access_token and media_id are required" });
+    }
+  
+    try {
+      const insightRes = await axios.get(
+        `https://graph.instagram.com/${media_id}/insights`, {
+          params: {
+            metric: "impressions,reach,engagement,saved",
+            access_token,
+          }
+        }
+      );
+  
+      return res.json(insightRes.data);
+    } catch (error) {
+      console.error("Error fetching insights:", error.response?.data || error.message);
+      return res.status(500).json({ error: "Failed to fetch insights" });
+    }
+  });
+  
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
